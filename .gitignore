@@ -3,3 +3,5 @@
 ################################################################################
 
 /NsTestFrameworkUI/NsTestFrameworkUI/obj
+/NsTestFrameworkUI/NsTestFrameworkUI/bin/Debug/netstandard2.0
+/NsTestFrameworkUI/.vs/NsTestFrameworkUI/v16

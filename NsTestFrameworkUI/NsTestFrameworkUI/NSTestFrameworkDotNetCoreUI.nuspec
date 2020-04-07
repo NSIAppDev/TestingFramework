@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NSTestFrameworkUI</id>
+    <version>$version$</version>
+    <title>TestFrameworkUI</title>
+    <authors>Northern Safety</authors>
+    <licenseUrl>http://opensource.org/licenses/ms-pl.html</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>UI automation test framework</description>
+    <releaseNotes>Base functionality</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+  </metadata>
+
+  <files>
+    <file src="$FileName$" target="lib" />
+  </files>
+</package>
