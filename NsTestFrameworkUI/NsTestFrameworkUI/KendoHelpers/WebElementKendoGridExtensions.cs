@@ -406,7 +406,7 @@ namespace NsTestFrameworkUI.KendoHelpers
 
         public static ReadOnlyCollection<IWebElement> GetAllRowsFromGrid(this IWebElement grid, By rowSelector)
         {
-            return grid.FindElements(By.CssSelector(".k-grid-content table tr"));
+            return grid.FindElements(rowSelector);
         }
 
         public static IWebElement GetButtonWithSpecifiedLinkTextFromSpecifiedRow(this IWebElement grid, string linkText,
