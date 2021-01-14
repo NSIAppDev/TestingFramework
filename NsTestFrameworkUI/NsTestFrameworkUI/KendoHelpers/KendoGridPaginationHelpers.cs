@@ -36,16 +36,13 @@ namespace NsTestFrameworkUI.KendoHelpers
             grid.FindElement(By.LinkText("Go to the next page")).Click();
             WaitHelpers.WaitUntilNoPendingAjaxRequests();
         }
-        
+
         public static int GetNumberOfItemsListedOnPageBottom(this IWebElement grid)
         {
             var numberOfItemsString = grid.FindElement(By.CssSelector("span.k-pager-info.k-label")).Text;
-            if (numberOfItemsString == "No items to display")
-            {
-                return 0;
-            }
-            var numberOfItems = int.Parse(numberOfItemsString.Split(' ')[4]);
-            return numberOfItems;
+            return numberOfItemsString == "No items to display"
+                ? 0
+                : int.Parse(numberOfItemsString.Split(' ')[4]);
         }
     }
 }

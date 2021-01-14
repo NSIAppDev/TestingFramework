@@ -1,30 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using System.Threading;
+using System.Linq;
+using OfficeOpenXml;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+
 
 namespace NsTestFrameworkUI.Helpers
 {
     public class FileHelper
     {
-        public static string FileDownloadsPath(string fileName)
+        public static void DeleteFileByPath(string path)
         {
-            var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var downloadPath = Path.Combine(userPath, "Downloads");
-            return Path.Combine(downloadPath, fileName);
-        }
-
-        public static void DeleteFile(string fileName)
-        {
-            var exportFilePath = FileDownloadsPath(fileName);
-            if (!File.Exists(exportFilePath)) return;
-            try
-            {
-                File.Delete(exportFilePath);
-            }
-            catch
-            {
-                // ignored
-            }
+            File.Delete(path);
         }
 
         public static void ClearFolder(string folderPath)
@@ -42,13 +32,91 @@ namespace NsTestFrameworkUI.Helpers
             }
         }
 
-        public static void WaitUntilFileExists(string fileName)
+        public static void WaitUntilFileExists(string filePath)
         {
-            var exportFilePath = FileDownloadsPath(fileName);
-            while (!File.Exists(exportFilePath))
+            var fluentWait = new DefaultWait<IWebDriver>(Browser.WebDriver) { Timeout = TimeSpan.FromSeconds(40) };
+
+            fluentWait.Until(x => File.Exists(filePath));
+        }
+
+        public static bool IsFilePresent(string path)
+        {
+            return File.Exists(path);
+        }
+
+        public static int GetNumberOfLinesFromExcel(string filePath, int worksheetIndex = 1)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var package = new ExcelPackage(new FileInfo(filePath));
+
+            var worksheet = package.Workbook.Worksheets[worksheetIndex];
+
+            return worksheet.Dimension.End.Row - 1;
+        }
+
+        public static List<string> GetColumnsNameFromExcel(string filePath)
+        {
+            var excelColumnsName = new List<string>();
+            var file = new FileInfo(filePath);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var excel = new ExcelPackage(file))
             {
-                Thread.Sleep(WaitHelpers.WaitTime);
+                var sheet = excel.Workbook.Worksheets.First();
+
+                excelColumnsName.AddRange(sheet.Cells[sheet.Dimension.Start.Row, sheet.Dimension.Start.Column, 1, sheet.Dimension.End.Column]
+                    .TakeWhile(firstRowCell => firstRowCell.Text.Length != 0).Select(firstRowCell => firstRowCell.Text));
             }
+            return excelColumnsName;
+        }
+
+        public static void EnableFileForEditing(string filePath)
+        {
+            WaitHelpers.ExplicitWait();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var xlWorkbook = new ExcelPackage(new FileInfo(filePath));
+
+            var workSheet = xlWorkbook.Workbook.Worksheets[0];
+            workSheet.Protection.IsProtected = true;
+            xlWorkbook.Save();
+        }
+
+        public static DataTable GetRowsFromExcel(string filePath)
+        {
+            var dataTable = new DataTable();
+            var file = new FileInfo(filePath);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var excel = new ExcelPackage(file))
+            {
+                var workSheet = excel.Workbook.Worksheets[0];
+
+                for (var rowIndex = workSheet.Dimension.Start.Row; rowIndex <= workSheet.Dimension.End.Row; rowIndex++)
+                {
+                    if (rowIndex == 1)
+                        for (var columnIndex = workSheet.Dimension.Start.Column; columnIndex <= workSheet.Dimension.End.Column; columnIndex++)
+                        {
+                            var cellValue = workSheet.Cells[rowIndex, columnIndex].Value.ToString();
+                            dataTable.Columns.Add(cellValue);
+                        }
+
+                    if (rowIndex == 1) continue;
+
+                    var row = workSheet.Cells[rowIndex, 1, rowIndex, workSheet.Dimension.End.Column];
+                    var newRow = dataTable.NewRow();
+
+                    foreach (var cell in row)
+                    {
+                        newRow[cell.Start.Column - 1] = cell.Text;
+                    }
+                    dataTable.Rows.Add(newRow);
+                }
+            }
+            return dataTable;
         }
     }
 }

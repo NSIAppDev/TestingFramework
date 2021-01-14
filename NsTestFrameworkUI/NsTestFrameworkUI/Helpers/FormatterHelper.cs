@@ -19,12 +19,16 @@ namespace NsTestFrameworkUI.Helpers
                     Replace(",", string.Empty), "[a-zA-Z]+", string.Empty).
                     Replace("&", string.Empty).
                     Replace(" ", string.Empty).
-                    Replace("/", string.Empty);
+                    Replace("/", string.Empty).
+                    Replace("-", string.Empty).
+                    Replace("_", string.Empty);
         }
 
         public static decimal ConvertStringToDecimal(this string value)
         {
-            return value.Equals(string.Empty) ? 0 : decimal.Parse(value, NumberStyles.Currency);
+            return value.Equals(string.Empty)
+                ? 0
+                : decimal.Parse(value, NumberStyles.Currency);
         }
 
         public static int ConvertStringToInt32(this string value)
@@ -39,10 +43,7 @@ namespace NsTestFrameworkUI.Helpers
 
         public static string ConvertToValidCSharpPropertyName(this string str)
         {
-            var arr = str.Where(c => (char.IsLetterOrDigit(c) || c == '_')).ToArray();
-
-            var newStr = new string(arr);
-            return newStr;
+            return new string(str.Where(c => (char.IsLetterOrDigit(c) || c == '_')).ToArray());
         }
     }
 }
