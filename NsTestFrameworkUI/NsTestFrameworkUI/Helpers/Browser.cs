@@ -13,8 +13,9 @@ namespace NsTestFrameworkUI.Helpers
         public static void InitializeDriver(string chromeDriverPath, bool useHeadless = false, string downloadDirectoryPath = null)
         {
             var options = new ChromeOptions();
-            options.AddArgument("--start-maximized");
             options.AddArgument("--ignore-certificate-errors");
+            options.AddArgument("no-sandbox");
+            options.SetLoggingPreference(LogType.Browser, LogLevel.All);
             options.PageLoadStrategy = PageLoadStrategy.Normal;
 
             if (!string.IsNullOrEmpty(downloadDirectoryPath))
@@ -31,9 +32,10 @@ namespace NsTestFrameworkUI.Helpers
             }
 
             WebDriver = new ChromeDriver(chromeDriverPath, options);
+            WebDriver.Manage().Window.Maximize();
         }
 
-        public static void Goto(string url)
+        public static void GoTo(string url)
         {
             WebDriver.Navigate().GoToUrl(url);
             WaitHelpers.WaitUntilNoPendingAjaxRequests();
@@ -43,6 +45,25 @@ namespace NsTestFrameworkUI.Helpers
         {
             WebDriver.Close();
             WebDriver.Quit();
+        }
+
+        public static void SwitchToLastTab()
+        {
+            var windowHandles = WebDriver.WindowHandles;
+            var lastTabIndex = windowHandles.Count - 1;
+            var lastTab = windowHandles[lastTabIndex];
+            WebDriver.SwitchTo().Window(lastTab);
+        }
+
+        public static void ClearCookies()
+        {
+            WebDriver.Manage().Cookies.DeleteAllCookies();
+        }
+
+        public static void AddCookie(string cookieName, string cookieValue)
+        {
+            var cookie = new Cookie(cookieName, cookieValue);
+            WebDriver.Manage().Cookies.AddCookie(cookie);
         }
 
         public static void DeleteCookie(string cookieName)

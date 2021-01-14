@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,18 +34,10 @@ namespace NsTestFrameworkUI.Pages
             ((IJavaScriptExecutor)Browser.WebDriver).ExecuteScript(hoverJs, webElement);
         }
 
-        public static void HoverTheMouse(this IWebElement element)
+        public static void MoveToElement(this IWebElement element)
         {
             var menuHover = new Actions(Browser.WebDriver);
             menuHover.MoveToElement(element).Perform();
-        }
-
-        public static void SwitchToLastTab()
-        {
-            var windowHandles = Browser.WebDriver.WindowHandles;
-            var lastTabIndex = windowHandles.Count - 1;
-            var lastTab = windowHandles[lastTabIndex];
-            Browser.WebDriver.SwitchTo().Window(lastTab);
         }
 
         public static void ScrollPageToTop()
@@ -84,30 +75,16 @@ namespace NsTestFrameworkUI.Pages
             return Browser.WebDriver.FindElements(selector);
         }
 
-        public static void SelectOptionFromDropdown(this By dropdownElement, string option)
+        public static void SelectFromDropdownByText(this By dropdownElement, string option)
         {
             var dropdown = Browser.WebDriver.FindElement(dropdownElement);
             var selectElement = new SelectElement(dropdown);
             selectElement.SelectByText(option);
         }
 
-        public static void SelectFromDropdown(this By dropdown, By optionsList, string option)
-        {
-            var element = Browser.WebDriver.FindElement(dropdown);
-            element.Click();
-            IList<IWebElement> dropdownList = element.FindElements(optionsList);
-            dropdownList.First(x => string.Equals(x.Text, option)).Click();
-        }
-
-        public static string GetCssValue(this IWebElement element, string cssValue)
-        {
-            return element.GetCssValue(cssValue);
-        }
-
         private static bool Exists(this By selector)
         {
-            var count = Browser.WebDriver.FindElements(selector).Count;
-            return count > 0;
+            return selector.GetElements().Count > 0;
         }
 
         public static void ClearField(this By selector)
@@ -163,10 +140,9 @@ namespace NsTestFrameworkUI.Pages
 
         public static bool AreElementsPresent(this By selector)
         {
-            var errorMessages = Browser.WebDriver.FindElements(selector);
             try
             {
-                return errorMessages.All(x => x.Displayed);
+                return selector.GetElements().All(x => x.Displayed);
             }
             catch (Exception)
             {

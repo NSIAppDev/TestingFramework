@@ -2,7 +2,6 @@
 using System.Threading;
 using NsTestFrameworkUI.Pages;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 using ExpectedConditions = SeleniumExtras.WaitHelpers.ExpectedConditions;
 
@@ -69,14 +68,6 @@ namespace NsTestFrameworkUI.Helpers
             return isLibraryDefined;
         }
 
-        public static void WaitUntilElementTextEquals(string selector, string textToMatch)
-        {
-            new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime))
-                .Until(driver =>
-                    driver.ExecuteJavaScript<bool>($"return (document.querySelector('{selector}') " +
-                                                   $"&& document.querySelector('{selector}').innerText == '{textToMatch}') || false"));
-        }
-
         public static void WaitUntilElementIsVisible(this By selector)
         {
             new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime))
@@ -121,6 +112,16 @@ namespace NsTestFrameworkUI.Helpers
             wait.Until(d => DateTime.Now - startingTime - TimeSpan.FromMilliseconds(Milliseconds) > TimeSpan.Zero);
         }
 
+        public static void ExplicitWait(int milliseconds)
+        {
+            var startingTime = DateTime.Now;
+            var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromMilliseconds(milliseconds))
+            {
+                PollingInterval = TimeSpan.FromMilliseconds(milliseconds)
+            };
+            wait.Until(d => DateTime.Now - startingTime - TimeSpan.FromMilliseconds(milliseconds) > TimeSpan.Zero);
+        }
+
         public static void WaitForElementToBeClickable(this By selector)
         {
             var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
@@ -131,6 +132,12 @@ namespace NsTestFrameworkUI.Helpers
         {
             var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
             wait.Until(element => element.FindElement(selector).Enabled);
+        }
+
+        public static void WaitUntilElementIsNotVisible(this By elementLocator)
+        {
+            var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(elementLocator));
         }
     }
 }

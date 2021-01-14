@@ -81,17 +81,8 @@ namespace NsTestFrameworkUI.KendoHelpers
         }
 
 
-        public static bool KendoGridHasData<TGridViewModel>(this IWebElement grid,
-            Expression<Func<TGridViewModel, bool>> condition)
-            where TGridViewModel : class, new()
-        {
-            AssertIsKendoGrid(grid);
-
-            return grid.GetKendoGridData<TGridViewModel>().Any(c => condition.Compile().Invoke(c));
-        }
-
         private static TGridViewModel ParseColumns<TGridViewModel>(ReadOnlyCollection<IWebElement> columns,
-            TGridViewModel dataItem, List<KendoGridHeaderModel> headers)
+              TGridViewModel dataItem, List<KendoGridHeaderModel> headers)
         {
             foreach (var header in headers)
             {
@@ -110,55 +101,6 @@ namespace NsTestFrameworkUI.KendoHelpers
         private static bool HeaderIsEmpty(KendoGridHeaderModel header)
         {
             return string.IsNullOrEmpty(header.PropertyName);
-        }
-
-        public static IWebElement GetHeaderSpecifiedByIndex(this IWebElement grid, By rowSelector, int rowIndex, int columnIndex)
-        {
-            var rows = grid.GetAllRowsFromGrid(rowSelector);
-            var cells = rows[rowIndex].FindElements(By.TagName("th"));
-            return cells[columnIndex];
-        }
-
-        public static void KendoGridNavigateToNextPage(this IWebElement grid, Action onNavigationCompleted = null)
-        {
-            AssertIsKendoGrid(grid);
-
-            var goToNextPageButton =
-                grid.FindElements(By.CssSelector("a[title='Go to the next page']")).FirstOrDefault();
-
-            if (NotFound(goToNextPageButton))
-                throw new InvalidOperationException("Kendo Grid next page button not found");
-
-            goToNextPageButton.Click();
-
-            onNavigationCompleted?.Invoke();
-        }
-
-        public static void KendoGridNavigateToPreviousPage(this IWebElement grid, Action onNavigationCompleted = null)
-        {
-            AssertIsKendoGrid(grid);
-
-            var goToPreviousPageButton =
-                grid.FindElements(By.CssSelector("a[title='Go to the previous page']")).FirstOrDefault();
-
-            if (NotFound(goToPreviousPageButton))
-                throw new InvalidOperationException("Kendo Grid next page button not found");
-
-            goToPreviousPageButton.Click();
-
-            onNavigationCompleted?.Invoke();
-        }
-
-        public static void KendoGridShouldHavePageNumber(this IWebElement grid, int pageNumber)
-        {
-            AssertIsKendoGrid(grid);
-
-            var gridId = grid.GetAttribute("id");
-            var fallbackGridSelector = "[kendo-grid]";
-            var gridSelector = !string.IsNullOrEmpty(gridId) ? $"#{gridId}" : fallbackGridSelector;
-
-            WaitHelpers.WaitUntilElementTextEquals($"{gridSelector} .k-pager-numbers .k-state-selected",
-                pageNumber.ToString());
         }
 
         public static void SetKendoGridInlineEditRowData(this IWebElement row, string property, string value,
@@ -212,31 +154,6 @@ namespace NsTestFrameworkUI.KendoHelpers
             editControl.SendKeys(value);
         }
 
-        public static string GetRowValue(this IWebElement row, string property)
-        {
-            AssertIsKendoGridRow(row);
-
-            var camelCasePropertyName = $"{char.ToLower(property[0])}{property.Substring(1)}";
-
-            var control = row.FindElement(By.CssSelector(
-                $"[ng-bind-custom='dataItem.{camelCasePropertyName}'],[ng-bind='dataItem.{camelCasePropertyName}']"));
-            return control.Text;
-        }
-
-        public static IWebElement GetUpdateButton(this IWebElement row)
-        {
-            AssertIsKendoGridRow(row);
-
-            return row.FindElement(By.ClassName("k-grid-update"));
-        }
-
-        public static IWebElement GetEditButton(this IWebElement row)
-        {
-            AssertIsKendoGridRow(row);
-
-            return row.FindElement(By.ClassName("k-grid-edit"));
-        }
-
         private static void AssertIsKendoGrid(IWebElement control)
         {
             if (string.IsNullOrEmpty(control?.GetAttribute("kendo-grid")))
@@ -273,23 +190,9 @@ namespace NsTestFrameworkUI.KendoHelpers
             return dataColumn != null;
         }
 
-        private static bool NotFound(IWebElement element)
-        {
-            return element == null;
-        }
-
-        private static TGridViewModel ParseRowData<TGridViewModel>(this IWebElement gridRow)
-            where TGridViewModel : new()
-        {
-            var columns = gridRow.GetRowCells();
-            var dataItem = new TGridViewModel();
-
-            return ParseColumns(columns, dataItem);
-        }
-
         private static TGridViewModel ParseRowData<TGridViewModel>(this IWebElement gridRow,
-            List<KendoGridHeaderModel> headers)
-            where TGridViewModel : class, new()
+             List<KendoGridHeaderModel> headers)
+             where TGridViewModel : class, new()
         {
             var columns = gridRow.GetRowCells();
             if (IsGroupingRow(gridRow))
@@ -307,42 +210,6 @@ namespace NsTestFrameworkUI.KendoHelpers
         private static ReadOnlyCollection<IWebElement> GetRowCells(this IWebElement gridRow)
         {
             return gridRow.FindElements(By.CssSelector("td[role=\"gridcell\"]"));
-        }
-
-        private static TGridViewModel ParseColumns<TGridViewModel>(ReadOnlyCollection<IWebElement> columns,
-            TGridViewModel dataItem)
-        {
-            foreach (var column in columns)
-            {
-                try
-                {
-                    var dataColumns = column.FindElements(By.CssSelector(_dataColumnCssSelector)).ToList();
-                    dataItem = CreateRowModelBasedOnCssClasses(dataColumns, dataItem);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
-
-            return dataItem;
-        }
-
-        private static TGridViewModel CreateRowModelBasedOnCssClasses<TGridViewModel>(IList<IWebElement> dataColumns,
-            TGridViewModel dataItem)
-        {
-            foreach (var dataColumn in dataColumns)
-            {
-                if (!IsValidDataColumn(dataColumn))
-                    continue;
-
-                var propertyName = GetPropertyName(dataColumn);
-                var value = dataColumn.Text;
-
-                SetProperty(dataItem, propertyName, value);
-            }
-
-            return dataItem;
         }
 
         public static void SetProperty<T>(T obj, string propertyName, string value)
