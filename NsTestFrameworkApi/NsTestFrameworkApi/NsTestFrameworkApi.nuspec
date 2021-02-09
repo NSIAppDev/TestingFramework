@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NsTestFrameworkApi</id>
+    <version>$version$</version>
+    <title>TestFrameworApi</title>
+    <authors>Northern Safety</authors>
+    <owners>Northern Safety</owners>
+    <licenseUrl>http://opensource.org/licenses/ms-pl.htmlE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Helper methods for HttpClient and Restsharp</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2021</copyright>
+  </metadata>
+  <files>
+    <file src="$FileName$" target="lib" />
+  </files>
+</package>
