@@ -10,7 +10,7 @@ namespace NsTestFrameworkUI.Helpers
         public static ChromeDriver WebDriver;
         public static ISearchContext Driver => WebDriver;
 
-        public static void InitializeDriver(bool useHeadless = false, string downloadDirectoryPath = null)
+        public static void InitializeDriver(string chromeDriverPath, bool useHeadless = false, string downloadDirectoryPath = null)
         {
             var options = new ChromeOptions();
             options.AddArgument("--ignore-certificate-errors");
@@ -31,7 +31,7 @@ namespace NsTestFrameworkUI.Helpers
                 options.AddArgument("--headless");
             }
 
-            WebDriver = new ChromeDriver(options);
+            WebDriver = new ChromeDriver(chromeDriverPath, options);
             WebDriver.Manage().Window.Maximize();
         }
 
