@@ -39,9 +39,9 @@ namespace NsTestFrameworkUI.Helpers
             var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
             wait.Until(driver =>
             {
-                var isAjaxFinished = (bool)((IJavaScriptExecutor)driver).
+                var isAngularFinished = (bool)((IJavaScriptExecutor)driver).
                     ExecuteScript("return angular.element(document.body).injector().get('$http').pendingRequests.length == 0");
-                return isAjaxFinished;
+                return isAngularFinished;
             });
         }
 
@@ -53,11 +53,10 @@ namespace NsTestFrameworkUI.Helpers
             var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
             wait.Until(driver =>
             {
-                var isAjaxFinished = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return window.jQuery.active == 0");
-                return isAjaxFinished;
+                var isJQueryFinished = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return typeof jQuery == \"function\"");
+                return isJQueryFinished;
             });
         }
-
 
         private static bool WaitForLibraryToBeDefined(string library)
         {
