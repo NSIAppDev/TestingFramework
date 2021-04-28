@@ -16,8 +16,6 @@ namespace NsTestFrameworkUI.KendoHelpers
 
         public static List<KendoGridHeaderModel> GetGridHeaders(this IWebElement grid)
         {
-            AssertIsKendoGrid(grid);
-
             var lockedHeaderElementsCount =
                 grid.FindElements(By.CssSelector(".k-grid-header-locked table th[data-index]")).Count;
 
@@ -52,7 +50,6 @@ namespace NsTestFrameworkUI.KendoHelpers
             Expression<Func<TGridViewModel, bool>> condition = null)
             where TGridViewModel : class, new()
         {
-            AssertIsKendoGrid(grid);
             var headers = grid.GetGridHeaders();
             return grid.GetKendoGridRow(condition).ParseRowData<TGridViewModel>(headers);
         }
@@ -60,7 +57,6 @@ namespace NsTestFrameworkUI.KendoHelpers
         public static List<TGridViewModel> GetKendoGridData<TGridViewModel>(this IWebElement grid)
             where TGridViewModel : class, new()
         {
-            AssertIsKendoGrid(grid);
             var headers = grid.GetGridHeaders();
             return grid
                 .GetKendoGridRows()
@@ -72,7 +68,6 @@ namespace NsTestFrameworkUI.KendoHelpers
             Expression<Func<TGridViewModel, bool>> condition)
             where TGridViewModel : class, new()
         {
-            AssertIsKendoGrid(grid);
             var headers = grid.GetGridHeaders();
             return grid
                 .GetKendoGridRows()
@@ -152,14 +147,6 @@ namespace NsTestFrameworkUI.KendoHelpers
             var editControl = row.FindElement(By.CssSelector($"input[name='{camelCasePropertyName}']"));
             editControl.Clear();
             editControl.SendKeys(value);
-        }
-
-        private static void AssertIsKendoGrid(IWebElement control)
-        {
-            if (string.IsNullOrEmpty(control?.GetAttribute("kendo-grid")))
-            {
-                throw new InvalidOperationException("Element is not a kendo grid");
-            }
         }
 
         private static void AssertIsKendoGridRow(IWebElement control)
@@ -245,7 +232,6 @@ namespace NsTestFrameworkUI.KendoHelpers
 
         public static IWebElement GetColumnSpecifiedByIndex(this IWebElement grid, int rowIndex, int columnIndex)
         {
-            AssertIsKendoGrid(grid);
             var rows = grid.GetAllRowsFromGrid();
             var cells = rows[rowIndex].FindElements(By.TagName("td"));
             return cells[columnIndex];
@@ -260,7 +246,6 @@ namespace NsTestFrameworkUI.KendoHelpers
 
         public static IWebElement GetLinkForSpecifiedColumnIndex(this IWebElement grid, int rowIndex, int columnIndex)
         {
-            AssertIsKendoGrid(grid);
             var rows = grid.GetAllRowsFromGrid();
             var cells = rows[rowIndex].FindElements(By.TagName("td"));
             return cells[columnIndex].FindElement(By.TagName("a"));
@@ -279,7 +264,6 @@ namespace NsTestFrameworkUI.KendoHelpers
         public static IWebElement GetButtonWithSpecifiedLinkTextFromSpecifiedRow(this IWebElement grid, string linkText,
             int rowIndex)
         {
-            AssertIsKendoGrid(grid);
             var rows = grid.GetAllRowsFromGrid();
             return rows[rowIndex].FindElement(By.LinkText(linkText));
         }
