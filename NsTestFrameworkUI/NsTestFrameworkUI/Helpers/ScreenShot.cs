@@ -1,26 +1,25 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 
 namespace NsTestFrameworkUI.Helpers
 {
-    internal class ScreenShot
+    public class ScreenShot
     {
         private static string GetTimestamp(DateTime dateTime)
         {
-            return dateTime.ToString("yyyyMMddHHmmss");
+            return dateTime.ToString("yyyy/MM/dd-HH:mm:ss");
         }
 
-        public static void TakeAndAttachScreenShot(TestContext testContext)
+        public static void TakeAndAttachScreenShot(string testName)
         {
             var screenShot = ((ITakesScreenshot)Browser.WebDriver).GetScreenshot();
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Screenshots");
-            var imageName = $"{testContext.TestName}_{GetTimestamp(DateTime.Now)}.png";
+            var imageName = $"{testName}_{GetTimestamp(DateTime.Now)}.png";
             var path = Path.Combine(folderPath, imageName);
             Directory.CreateDirectory(folderPath);
             screenShot.SaveAsFile(path);
-            testContext.AddResultFile(path);
+            screenShot.SaveAsFile(path, ScreenshotImageFormat.Png);
         }
     }
 }
