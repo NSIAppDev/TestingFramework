@@ -8,7 +8,7 @@ namespace NsTestFrameworkUI.Helpers
     {
         private static string GetTimestamp(DateTime dateTime)
         {
-            return dateTime.ToString("yyyy-MM-dd-HH:mm:ss");
+            return dateTime.ToString("yyyyMMddHHmmss");
         }
 
         public static void TakeAndAttachScreenShot(string testName)
@@ -18,8 +18,9 @@ namespace NsTestFrameworkUI.Helpers
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Screenshots");
             var imageName = $"{testName}_{GetTimestamp(DateTime.Now)}.png";
             var imagePath = Path.Combine(folderPath, imageName);
+
             Directory.CreateDirectory(folderPath);
-            screenShot.SaveAsFile(imagePath, ScreenshotImageFormat.Png);
+            screenShot.SaveAsFile(imagePath);
         }
     }
 }
