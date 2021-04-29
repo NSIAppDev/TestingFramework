@@ -20,6 +20,11 @@ namespace NsTestFrameworkUI.Pages
             return page;
         }
 
+        public static void JavaScriptClick(this IWebElement webElement)
+        {
+            ((IJavaScriptExecutor)Browser.Driver).ExecuteScript("arguments[0].click();", webElement);
+        }
+
         public static IWebElement Enable(this IWebElement webElement)
         {
             Browser.WebDriver.ExecuteJavaScript("arguments[0].removeAttribute('disabled')", webElement);

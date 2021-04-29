@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using NsTestFrameworkUI.Helpers;
+using NsTestFrameworkUI.Pages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.Extensions;
 
@@ -110,8 +111,7 @@ namespace NsTestFrameworkUI.KendoHelpers
             if (!IsValidDataColumn(readOnlyControl)) return;
             var camelCasePropertyName = $"{char.ToLower(property[0])}{property.Substring(1)}";
 
-            var executor = (IJavaScriptExecutor)Browser.WebDriver;
-            executor.ExecuteScript("arguments[0].click();", readOnlyControl);
+          readOnlyControl.JavaScriptClick();
             SetValue(row, value, camelCasePropertyName, isJsonObject);
         }
 
