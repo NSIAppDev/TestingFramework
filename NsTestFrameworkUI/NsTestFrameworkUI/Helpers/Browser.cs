@@ -10,7 +10,7 @@ namespace NsTestFrameworkUI.Helpers
         public static ChromeDriver WebDriver;
         public static ISearchContext Driver => WebDriver;
 
-        public static void InitializeDriver(bool useHeadless = false, string downloadDirectoryPath = null)
+        public static void InitializeDriver(DriverOptions driverOptions)
         {
             var options = new ChromeOptions();
             options.AddArgument("--ignore-certificate-errors");
@@ -18,18 +18,21 @@ namespace NsTestFrameworkUI.Helpers
             options.SetLoggingPreference(LogType.Browser, LogLevel.All);
             options.PageLoadStrategy = PageLoadStrategy.Normal;
 
-            if (!string.IsNullOrEmpty(downloadDirectoryPath))
+            if (!string.IsNullOrEmpty(driverOptions.DownloadDirectoryPath))
             {
-                options.AddUserProfilePreference("download.default_directory", downloadDirectoryPath);
+                options.AddUserProfilePreference("download.default_directory", driverOptions.DownloadDirectoryPath);
                 options.AddUserProfilePreference("download.prompt_for_download", false);
                 options.AddUserProfilePreference("disable-popup-blocking", "true");
             }
 
-            if (useHeadless)
+            if (driverOptions.IsHeadless)
             {
                 options.AddArgument("--window-size=1920,1080");
                 options.AddArgument("--headless");
             }
+
+            if (driverOptions.IsMobileLayout)
+                options.EnableMobileEmulation("iPhone X");
 
             WebDriver = new ChromeDriver(options);
             WebDriver.Manage().Window.Maximize();
