@@ -133,10 +133,16 @@ namespace NsTestFrameworkUI.Helpers
             wait.Until(element => element.FindElement(selector).Enabled);
         }
 
-        public static void WaitUntilElementIsNotVisible(this By elementLocator)
+        public static void WaitUntilElementIsNotVisible(this By selector)
         {
             var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
-            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(elementLocator));
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(selector));
+        }
+
+        public static void WaitUntilTextIsPresentInElementLocated(this By selector, string text)
+        {
+            var wait = new WebDriverWait(Browser.WebDriver, TimeSpan.FromSeconds(WaitTime));
+            wait.Until(ExpectedConditions.TextToBePresentInElementLocated(selector, text));
         }
     }
 }

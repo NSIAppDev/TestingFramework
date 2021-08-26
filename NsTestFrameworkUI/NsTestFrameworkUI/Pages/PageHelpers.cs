@@ -111,7 +111,7 @@ namespace NsTestFrameworkUI.Pages
         public static void ActionSendKeys(this By selector, string text)
         {
             selector.WaitForElement();
-            if (!selector.Exists()) return;
+            if (!selector.Exists() || string.IsNullOrEmpty(text)) return;
 
             selector.ClearField();
             Browser.WebDriver.FindElement(selector).SendKeys(text);
@@ -185,6 +185,11 @@ namespace NsTestFrameworkUI.Pages
         public static string GetAttribute(this By selector, string attributeName)
         {
             return Browser.WebDriver.FindElement(selector).GetAttribute(attributeName);
+        }
+
+        public static string GetSelectedOption(this By element)
+        {
+            return new SelectElement(Browser.WebDriver.FindElement(element)).SelectedOption.Text;
         }
 
     }

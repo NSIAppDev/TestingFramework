@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using NsTestFrameworkUI.Helpers;
 using NsTestFrameworkUI.Pages;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.Extensions;
 
 namespace NsTestFrameworkUI.KendoHelpers
 {
@@ -102,8 +101,6 @@ namespace NsTestFrameworkUI.KendoHelpers
         public static void SetKendoGridInlineEditRowData(this IWebElement row, string property, string value,
             bool isJsonObject = false)
         {
-            AssertIsKendoGridRow(row);
-
             var readOnlyControl = row
                 .FindElements(By.CssSelector(_dataColumnCssSelector))
                 .FirstOrDefault(c => GetPropertyName(c).Equals(property));
@@ -111,7 +108,7 @@ namespace NsTestFrameworkUI.KendoHelpers
             if (!IsValidDataColumn(readOnlyControl)) return;
             var camelCasePropertyName = $"{char.ToLower(property[0])}{property.Substring(1)}";
 
-          readOnlyControl.JavaScriptClick();
+            readOnlyControl.JavaScriptClick();
             SetValue(row, value, camelCasePropertyName, isJsonObject);
         }
 
@@ -140,22 +137,11 @@ namespace NsTestFrameworkUI.KendoHelpers
 
         public static void SetKendoGridInlineWithButtonsEditRowData(this IWebElement row, string property, string value)
         {
-            AssertIsKendoGridRow(row);
-
             var camelCasePropertyName = $"{char.ToLower(property[0])}{property.Substring(1)}";
 
             var editControl = row.FindElement(By.CssSelector($"input[name='{camelCasePropertyName}']"));
             editControl.Clear();
             editControl.SendKeys(value);
-        }
-
-        private static void AssertIsKendoGridRow(IWebElement control)
-        {
-            var isKendoGridRow =
-                Browser.WebDriver.ExecuteJavaScript<bool>(
-                    $"return $(\"[data-uid='{control.GetAttribute("data-uid")}']\").parents('[kendo-grid]').length > 0");
-            if (!isKendoGridRow)
-                throw new InvalidOperationException("Element is not a kendo grid row");
         }
 
         private static ReadOnlyCollection<IWebElement> GetKendoGridRows(this IWebElement grid)
