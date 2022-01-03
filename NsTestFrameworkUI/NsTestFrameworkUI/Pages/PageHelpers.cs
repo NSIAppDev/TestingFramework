@@ -100,6 +100,14 @@ namespace NsTestFrameworkUI.Pages
             Browser.WebDriver.FindElement(selector).Clear();
         }
 
+        public static void ClearInput(this By selector)
+        {
+            var element = Browser.WebDriver.FindElement(selector);
+            while (element.GetAttribute("value").Length > 0)
+            {
+                element.SendKeys(Keys.Backspace);
+            }
+        }
         public static void ActionClick(this By selector)
         {
             selector.WaitForElementToBeClickable();
