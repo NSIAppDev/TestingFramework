@@ -2,7 +2,7 @@
 {
     public class DriverOptions
     {
-        public string DriverPath { get; set; }
+        public string ChromeDriverPath { get; set; }
 
         public bool IsHeadless { get; set; } = false;
 

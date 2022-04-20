@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -200,5 +201,8 @@ namespace NsTestFrameworkUI.Pages
             return new SelectElement(Browser.WebDriver.FindElement(element)).SelectedOption.Text;
         }
 
+        public static List<string> GetDropdownValues(this By element) => new SelectElement(Browser.WebDriver.FindElement(element))
+            .Options.Select(x => x.Text)
+            .ToList();
     }
 }
