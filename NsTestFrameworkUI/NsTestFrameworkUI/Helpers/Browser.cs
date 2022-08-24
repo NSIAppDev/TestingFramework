@@ -31,7 +31,7 @@ namespace NsTestFrameworkUI.Helpers
 
             if (driverOptions.IsHeadless)
             {
-                options.AddArgument("--window-size=1920,1080");
+                options.AddArgument(driverOptions.HeadlessResolution);
                 options.AddArgument("--headless");
             }
 

@@ -9,5 +9,6 @@
         public string DownloadDirectoryPath { get; set; }
 
         public bool IsMobileLayout { get; set; } = false;
+        public string HeadlessResolution { get; set; } = "--window-size=1920,1080";
     }
 }
