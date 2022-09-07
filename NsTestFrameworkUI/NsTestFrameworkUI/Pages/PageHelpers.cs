@@ -204,5 +204,13 @@ namespace NsTestFrameworkUI.Pages
         public static List<string> GetDropdownValues(this By element) => new SelectElement(Browser.WebDriver.FindElement(element))
             .Options.Select(x => x.Text)
             .ToList();
+
+        public static void ClickBasedOnLabel(this By buttons, By labels, string labelName)
+        {
+            var buttonsElements = buttons.GetElements();
+            var labelsElements = labels.GetElements();
+            var index = labelsElements.IndexOf(labelsElements.First(x => x.Text == labelName));
+            buttonsElements[index].Click();
+        }
     }
 }
