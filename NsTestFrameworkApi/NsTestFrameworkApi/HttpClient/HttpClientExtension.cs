@@ -19,6 +19,15 @@ namespace NsTestFrameworkApi.HttpClient
             return httpClient.PostAsync(url, content);
         }
 
+        public static Task<HttpResponseMessage> PostFile(this System.Net.Http.HttpClient httpClient, string resource, string filePath)
+        {
+            using var requestContent = new MultipartFormDataContent();
+            using var fileStream = File.OpenRead(filePath);
+            var fileName = Path.GetFileName(filePath);
+            requestContent.Add(new StreamContent(fileStream), "file", fileName);
+            return httpClient.PostAsync(resource, requestContent);
+        }
+
         public static Task<HttpResponseMessage> PutAsJsonAsync<T>(this System.Net.Http.HttpClient httpClient, string resource, T data)
         {
             var dataAsString = JsonConvert.SerializeObject(data);
