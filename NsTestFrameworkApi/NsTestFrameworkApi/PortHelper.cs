@@ -5,7 +5,7 @@ namespace NsTestFrameworkApi;
 
 internal static class PortHelper
 {
-    internal static (int Port1, int Port2) Ports { get; } = GetAvailablePorts();
+    public static (int Port1, int Port2) Ports { get; } = GetAvailablePorts();
 
     private static (int Port1, int Port2) GetAvailablePorts()
     {
@@ -25,6 +25,6 @@ internal static class PortHelper
         return (port1, port2);
     }
 
-    internal static string BuildUrlUsingAvailablePort(string host, int port)
+    public static string BuildUrlUsingAvailablePort(string host, int port)
         => $"{host}:{port}/";
 }
