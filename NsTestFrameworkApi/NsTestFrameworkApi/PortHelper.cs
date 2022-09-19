@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace NsTestFrameworkApi;
 
-internal static class PortHelper
+public static class PortHelper
 {
     public static (int Port1, int Port2) Ports { get; } = GetAvailablePorts();
 
