@@ -44,7 +44,7 @@ namespace NsTestFrameworkUI.Helpers
             return File.Exists(path);
         }
 
-        public static int GetNumberOfLinesFromExcel(string filePath, int worksheetIndex = 1)
+        public static int GetNumberOfLinesFromExcel(string filePath, int worksheetIndex = 0)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -55,7 +55,7 @@ namespace NsTestFrameworkUI.Helpers
             return worksheet.Dimension.End.Row - 1;
         }
 
-        public static List<string> GetColumnsNameFromExcel(string filePath)
+        public static List<string> GetColumnsNameFromExcel(string filePath, int worksheetIndex = 0)
         {
             var excelColumnsName = new List<string>();
             var file = new FileInfo(filePath);
@@ -64,7 +64,7 @@ namespace NsTestFrameworkUI.Helpers
 
             using (var excel = new ExcelPackage(file))
             {
-                var sheet = excel.Workbook.Worksheets.First();
+                var sheet = excel.Workbook.Worksheets[worksheetIndex];
 
                 excelColumnsName.AddRange(sheet.Cells[sheet.Dimension.Start.Row, sheet.Dimension.Start.Column, 1, sheet.Dimension.End.Column]
                     .TakeWhile(firstRowCell => firstRowCell.Text.Length != 0).Select(firstRowCell => firstRowCell.Text));
@@ -72,19 +72,19 @@ namespace NsTestFrameworkUI.Helpers
             return excelColumnsName;
         }
 
-        public static void EnableFileForEditing(string filePath)
+        public static void EnableFileForEditing(string filePath, int worksheetIndex = 0)
         {
             WaitHelpers.ExplicitWait();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             var xlWorkbook = new ExcelPackage(new FileInfo(filePath));
 
-            var workSheet = xlWorkbook.Workbook.Worksheets[0];
+            var workSheet = xlWorkbook.Workbook.Worksheets[worksheetIndex];
             workSheet.Protection.IsProtected = true;
             xlWorkbook.Save();
         }
 
-        public static DataTable GetRowsFromExcel(string filePath)
+        public static DataTable GetRowsFromExcel(string filePath, int worksheetIndex = 0)
         {
             var dataTable = new DataTable();
             var file = new FileInfo(filePath);
@@ -93,7 +93,7 @@ namespace NsTestFrameworkUI.Helpers
 
             using (var excel = new ExcelPackage(file))
             {
-                var workSheet = excel.Workbook.Worksheets[0];
+                var workSheet = excel.Workbook.Worksheets[worksheetIndex];
 
                 for (var rowIndex = workSheet.Dimension.Start.Row; rowIndex <= workSheet.Dimension.End.Row; rowIndex++)
                 {
