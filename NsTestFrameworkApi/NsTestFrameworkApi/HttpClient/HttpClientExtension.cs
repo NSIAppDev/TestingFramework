@@ -21,11 +21,12 @@ namespace NsTestFrameworkApi.HttpClient
 
         public static Task<HttpResponseMessage> DeleteAsJsonAsync<T>(this System.Net.Http.HttpClient httpClient, string url, T data)
         {
-            var dataAsString = JsonConvert.SerializeObject(data);
+            var message = new HttpRequestMessage(HttpMethod.Delete, url)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+            };
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, url);
-            request.Content = new StringContent(dataAsString);
-            return httpClient.SendAsync(request);
+            return httpClient.SendAsync(message);
         }
 
         public static Task<HttpResponseMessage> PostFile(this System.Net.Http.HttpClient httpClient, string resource, string filePath)
