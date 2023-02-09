@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace NsTestFrameworkUI.Helpers
 {
@@ -38,9 +40,9 @@ namespace NsTestFrameworkUI.Helpers
             if (driverOptions.IsMobileLayout)
                 options.EnableMobileEmulation("iPhone X");
 
-
+            new DriverManager().SetUpDriver(new ChromeConfig());
             WebDriver = new ChromeDriver(driverOptions.ChromeDriverPath, options, TimeSpan.FromMinutes(3));
-            WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
+            // WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
             WebDriver.Manage().Window.Maximize();
         }
 
