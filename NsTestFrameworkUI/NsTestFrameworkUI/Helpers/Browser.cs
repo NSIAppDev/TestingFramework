@@ -40,7 +40,6 @@ namespace NsTestFrameworkUI.Helpers
             if (driverOptions.IsMobileLayout)
                 options.EnableMobileEmulation("iPhone X");
 
-            new DriverManager().SetUpDriver(new ChromeConfig());
             WebDriver = new ChromeDriver(driverOptions.ChromeDriverPath, options, TimeSpan.FromMinutes(3));
             // WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
             WebDriver.Manage().Window.Maximize();
