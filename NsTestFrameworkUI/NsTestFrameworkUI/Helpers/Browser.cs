@@ -2,18 +2,29 @@
 using System.Diagnostics;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using WebDriverManager;
-using WebDriverManager.DriverConfigs.Impl;
+using OpenQA.Selenium.Remote;
 
 namespace NsTestFrameworkUI.Helpers
 {
     public static class Browser
     {
         [ThreadStatic]
-        public static ChromeDriver WebDriver;
+        public static WebDriver WebDriver;
         public static ISearchContext Driver => WebDriver;
 
         public static void InitializeDriver(DriverOptions driverOptions)
+        {
+            WebDriver = new ChromeDriver(driverOptions.ChromeDriverPath, GetChromeOptions(driverOptions), TimeSpan.FromMinutes(3));
+            WebDriver.Manage().Window.Maximize();
+        }
+
+        public static void InitializeRemoteDriver(DriverOptions driverOptions)
+        {
+            WebDriver = new RemoteWebDriver(new Uri("http://localhost:4444/"), GetChromeOptions(driverOptions));
+            WebDriver.Manage().Window.Maximize();
+        }
+
+        private static ChromeOptions GetChromeOptions(DriverOptions driverOptions)
         {
             var options = new ChromeOptions();
             options.AddArgument("--ignore-certificate-errors");
@@ -39,10 +50,7 @@ namespace NsTestFrameworkUI.Helpers
 
             if (driverOptions.IsMobileLayout)
                 options.EnableMobileEmulation("iPhone X");
-
-            WebDriver = new ChromeDriver(driverOptions.ChromeDriverPath, options, TimeSpan.FromMinutes(3));
-            // WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
-            WebDriver.Manage().Window.Maximize();
+            return options;
         }
 
         public static void GoTo(string url)
