@@ -20,7 +20,7 @@ namespace NsTestFrameworkUI.Helpers
 
         public static void InitializeRemoteDriver(DriverOptions driverOptions)
         {
-            WebDriver = new RemoteWebDriver(new Uri("http://localhost:4444/"), GetChromeOptions(driverOptions));
+            WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), GetChromeOptions(driverOptions));
             WebDriver.Manage().Window.Maximize();
         }
 
