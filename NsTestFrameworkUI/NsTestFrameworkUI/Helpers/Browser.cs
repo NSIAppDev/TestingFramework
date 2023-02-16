@@ -20,6 +20,9 @@ namespace NsTestFrameworkUI.Helpers
 
         public static void InitializeRemoteDriver(DriverOptions driverOptions)
         {
+            var chromeOptions = GetChromeOptions(driverOptions);
+            chromeOptions.AddArgument("--disable-dev-shm-usage");
+
             WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), GetChromeOptions(driverOptions));
             WebDriver.Manage().Window.Maximize();
         }
