@@ -21,7 +21,7 @@ namespace NsTestFrameworkUI.Helpers
         public static void InitializeRemoteDriver(DriverOptions driverOptions)
         {
             var chromeOptions = GetChromeOptions(driverOptions);
-            chromeOptions.AddArgument("--disable-dev-shm-usage");
+           // chromeOptions.AddArgument("--disable-dev-shm-usage");
 
             WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), GetChromeOptions(driverOptions));
             WebDriver.Manage().Window.Maximize();
@@ -32,6 +32,9 @@ namespace NsTestFrameworkUI.Helpers
             var options = new ChromeOptions();
             options.AddArgument("--ignore-certificate-errors");
             options.AddArgument("no-sandbox");
+            options.AddArgument("--whitelisted-ips");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-extensions");
             options.SetLoggingPreference(LogType.Browser, LogLevel.All);
             options.PageLoadStrategy = PageLoadStrategy.Normal;
 
