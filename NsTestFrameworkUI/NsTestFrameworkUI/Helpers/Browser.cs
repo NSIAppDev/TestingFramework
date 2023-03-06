@@ -49,7 +49,7 @@ namespace NsTestFrameworkUI.Helpers
             if (driverOptions.IsHeadless)
             {
                 options.AddArgument(driverOptions.HeadlessResolution);
-                options.AddArgument("--headless");
+                options.AddArgument("--headless=new");
             }
 
             if (driverOptions.IsMobileLayout)
