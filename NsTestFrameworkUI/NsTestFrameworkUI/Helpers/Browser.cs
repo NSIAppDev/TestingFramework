@@ -12,19 +12,25 @@ namespace NsTestFrameworkUI.Helpers
         public static WebDriver WebDriver;
         public static ISearchContext Driver => WebDriver;
 
-        public static void InitializeDriver(DriverOptions driverOptions)
+        public static void InitializeDriver(DriverOptions driverOptions, ChromeOptions chromeOptions = null)
         {
-            WebDriver = new ChromeDriver(driverOptions.ChromeDriverPath, GetChromeOptions(driverOptions), TimeSpan.FromMinutes(3));
-            WebDriver.Manage().Window.Maximize();
+            WebDriver = chromeOptions == null
+                ? new ChromeDriver(driverOptions.ChromeDriverPath, GetChromeOptions(driverOptions), TimeSpan.FromMinutes(3))
+                : new ChromeDriver(driverOptions.ChromeDriverPath, chromeOptions, TimeSpan.FromMinutes(3));
         }
 
-        public static void InitializeRemoteDriver(DriverOptions driverOptions)
+        public static void InitializeRemoteDriver(DriverOptions driverOptions, ChromeOptions chromeOptions = null)
         {
-            var chromeOptions = GetChromeOptions(driverOptions);
-            chromeOptions.AddArgument("--disable-dev-shm-usage");
-
-            WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), GetChromeOptions(driverOptions));
-            WebDriver.Manage().Window.Maximize();
+            if (chromeOptions == null)
+            {
+                var options = GetChromeOptions(driverOptions);
+                options.AddArgument("--disable-dev-shm-usage");
+                WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), GetChromeOptions(driverOptions));
+            }
+            else
+            {
+                WebDriver = new RemoteWebDriver(new Uri(driverOptions.RemoteAddress), chromeOptions);
+            }
         }
 
         private static ChromeOptions GetChromeOptions(DriverOptions driverOptions)
