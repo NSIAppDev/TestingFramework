@@ -76,6 +76,11 @@ namespace NsTestFrameworkUI.Pages
             ((IJavaScriptExecutor)Browser.WebDriver).ExecuteScript("window.scrollTo(0, -document.body.scrollHeight)");
         }
 
+        public static void ScrollToView(this By selector)
+        {
+            var elem = Browser.WebDriver.FindElement(selector);
+            ((IJavaScriptExecutor)Browser.Driver).ExecuteScript("arguments[0].scrollIntoView(true);", elem);
+        }
         public static ReadOnlyCollection<IWebElement> GetElements(this By selector)
         {
             return Browser.WebDriver.FindElements(selector);
