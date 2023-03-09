@@ -215,7 +215,11 @@ namespace NsTestFrameworkUI.Pages
             var buttonsElements = buttons.GetElements();
             var labelsElements = labels.GetElements();
             var index = labelsElements.IndexOf(labelsElements.First(x => x.Text == labelName));
+            buttonsElements[index].ScrollToView();
             buttonsElements[index].Click();
         }
+
+        public static void ScrollToView(this IWebElement selector) => ((IJavaScriptExecutor)Browser.Driver).ExecuteScript("arguments[0].scrollIntoView(true);", selector);
+
     }
 }
