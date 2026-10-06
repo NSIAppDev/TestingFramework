@@ -161,7 +161,8 @@ namespace NsTestFrameworkUI.Pages
         {
             try
             {
-                return selector.GetElements().All(x => x.Displayed);
+                var elements = selector.GetElements();
+                return elements.Any() && elements.All(e => e.Displayed);
             }
             catch (Exception)
             {
